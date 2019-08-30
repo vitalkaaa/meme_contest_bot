@@ -1,8 +1,12 @@
+import os
+
 from handlers import meme_handler, vote_handler
 
 import telebot
 
-BOT_TOKEN = '936423319:AAHIzkoM_Sos-epjSngJDGv_YJTAS6Bv9oo'
+from dotenv import load_dotenv
+load_dotenv()
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 bot = telebot.TeleBot(BOT_TOKEN)
 
 
