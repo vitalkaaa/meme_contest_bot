@@ -14,7 +14,6 @@ POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_HOST = os.getenv("POSTGRES_HOST")
 POSTGRES_DB = os.getenv("POSTGRES_DB")
 
-
 engine = create_engine(f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}', echo=False)
 # engine = create_engine('sqlite:///db.sqlite', echo=False)
 

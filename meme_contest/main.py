@@ -1,12 +1,8 @@
 import os
 
-from dotenv import load_dotenv
-
 from meme_bot import MemeBot
 
-load_dotenv('../')
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-
 bot = MemeBot(BOT_TOKEN)
 
 
