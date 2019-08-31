@@ -7,16 +7,11 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from utils import session_scope
 
-print('connect to DB')
 Base = declarative_base()
-POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-POSTGRES_USER = os.getenv("POSTGRES_USER")
-POSTGRES_HOST = os.getenv("POSTGRES_HOST")
-POSTGRES_DB = os.getenv("POSTGRES_DB")
+DB_CONNECTION_STRING = os.getenv("DB_CONNECTION_STRING")
 
-print(POSTGRES_DB, POSTGRES_HOST, POSTGRES_PASSWORD, POSTGRES_USER)
-engine = create_engine(f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}', echo=False)
-# engine = create_engine('sqlite:///db.sqlite', echo=False)
+print('connecting to DB:', DB_CONNECTION_STRING)
+engine = create_engine(DB_CONNECTION_STRING, echo=False)
 
 
 class Meme(Base):
