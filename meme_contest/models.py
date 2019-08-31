@@ -6,8 +6,10 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from utils import session_scope
 
+print('connect to DB')
 Base = declarative_base()
-engine = create_engine('sqlite:///db.sqlite', echo=False)
+engine = create_engine('postgresql+psycopg2://admin:password@localhost/memes', echo=False)
+# engine = create_engine('sqlite:///db.sqlite', echo=False)
 
 
 class Meme(Base):
@@ -84,8 +86,14 @@ class Vote(Base):
     @staticmethod
     def get_chat_ids():
         with session_scope(engine) as session:
-            chats = session.query(Vote).group_by(Vote.chat_id).all()
-            return [c.chat_id for c in chats]
+            chats = session.query(Vote.chat_id).group_by(Vote.chat_id).all()
+            return [chat_id[0] for chat_id in chats]
+
+    @staticmethod
+    def get_votes(chat_id):
+        with session_scope(engine) as session:
+            chats = session.query(Vote).filter_by(chat_id=chat_id).all()
+            return chats
 
     @staticmethod
     def get_daily_rating(chat_id):
@@ -151,5 +159,6 @@ class User(Base):
 
 # Создание таблицы
 if __name__ == '__main__':
-    Base.metadata.create_all(engine)
-
+    # Base.metadata.create_all(engine)
+    for vote in Vote.get_votes(-364882467):
+        print(vote.user_id, vote.mark, vote.chat_id, vote.msg_id)

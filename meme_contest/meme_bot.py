@@ -54,7 +54,7 @@ class MemeBot(telebot.TeleBot):
         if not user:
             user.save()
 
-        if not Vote.is_voted(telegram_id, chat_id, msg_id):
+        if not Vote.is_voted(user.id, chat_id, msg_id):
             Vote(user.id, chat_id, msg_id, mark).save()
             self.answer_callback_query(call.id, text='You voted')
         else:
@@ -95,6 +95,7 @@ class MemeBot(telebot.TeleBot):
         thread.run()
 
     def run_pooling(self):
-        thread = Thread(target=self.polling, kwargs={'none_stop': True, 'interval': 0})
-        thread.daemon = True
-        thread.start()
+        # thread = Thread(target=self.polling, kwargs={'none_stop': True, 'interval': 0})
+        # thread.daemon = True
+        # thread.start()
+        self.polling(none_stop=True, interval=0)

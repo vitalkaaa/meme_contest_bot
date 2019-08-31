@@ -1,0 +1,14 @@
+version: "3"
+services:
+  meme_contest:
+    build: .
+    network_mode: host
+    env_file: .env
+    depends_on:
+      - db
+  db:
+    image: postgres
+    env_file: .env
+    network_mode: host
+    expose:
+      - 5432
