@@ -31,14 +31,12 @@ class Meme(Base):
     def save(self):
         with session_scope(engine) as session:
                 session.add(self)
-                print('detect meme', flush=True)
                 session.commit()
         return self
 
     @staticmethod
     def get_meme(chat_id, msg_id):
         with session_scope(engine) as session:
-            print(chat_id, msg_id)
             return session.query(Meme).filter_by(chat_id=chat_id, msg_id=msg_id).first()
 
     @staticmethod
@@ -72,7 +70,6 @@ class Vote(Base):
     def save(self):
         with session_scope(engine) as session:
             session.add(self)
-            print('voted', self.meme_id, flush=True)
             session.commit()
         return self
 

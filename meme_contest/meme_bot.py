@@ -70,7 +70,7 @@ class MemeBot(telebot.TeleBot):
 
         if meme and not Vote.is_voted(user.id, meme.id):
             Vote(user.id, meme.id, mark).save()
-            print(user.username, 'voted', flush=True)
+            print(user.username, 'voted', mark, flush=True)
             self.answer_callback_query(call.id, text='You voted')
         else:
             print(user.username, 'have tried to vote again', flush=True)
