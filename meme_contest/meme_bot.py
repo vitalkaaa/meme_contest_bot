@@ -29,14 +29,14 @@ class MemeBot(telebot.TeleBot):
         super(MemeBot, self).__init__(token=token)
 
     def command_handler(self, message):
-        chat_id = message.chat.id
+        chat_id = str(message.chat.id)
 
         if message.text.split(' ')[0].startswith('/rating'):
             self.send_message(chat_id, User.get_rating(chat_id), parse_mode='HTML')
 
     def meme_handler(self, message: telebot.types.Message):
         telegram_id = message.from_user.id
-        chat_id = message.chat.id
+        chat_id = str(message.chat.id)
         msg_id = message.message_id
         username = '@' + message.from_user.username if message.from_user.username else message.from_user.first_name
 
@@ -55,7 +55,7 @@ class MemeBot(telebot.TeleBot):
 
     def vote_handler(self, call: telebot.types.CallbackQuery):
         telegram_id = call.from_user.id
-        chat_id = call.message.chat.id
+        chat_id = str(call.message.chat.id)
         msg_id = call.message.message_id
         mark = int(call.data)
         username = '@' + call.from_user.username if call.from_user.username else call.from_user.first_name

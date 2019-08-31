@@ -25,7 +25,7 @@ class Meme(Base):
     posted_at = Column(DateTime)
     user_id = Column(Integer, ForeignKey('users.id'))
     msg_id = Column(Integer)
-    chat_id = Column(Integer)
+    chat_id = Column(String)
 
     def __init__(self, user_id, msg_id, chat_id):
         self.posted_at = datetime.utcnow().replace(microsecond=0)
@@ -66,7 +66,7 @@ class Vote(Base):
     voted_at = Column(DateTime)
     user_id = Column(Integer, ForeignKey('users.id'))
     msg_id = Column(Integer)
-    chat_id = Column(Integer)
+    chat_id = Column(String)
     mark = Column(Integer)
 
     def __init__(self, user_id, chat_id, msg_id, mark):
@@ -117,7 +117,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     registred_at = Column(DateTime)
     telegram_id = Column(Integer)
-    chat_id = Column(Integer)
+    chat_id = Column(String)
     points = Column(Integer, default=0)
     username = Column(String)
 
