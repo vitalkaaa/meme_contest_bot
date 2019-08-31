@@ -22,7 +22,14 @@ def session_scope(engine):
 def vote_keyboard():
     keyboard = types.InlineKeyboardMarkup()
     buttons = []
-    for i in range(7):
+    for i in range(5):
+        callback_data = f'{i + 1}'
+        buttons.append(types.InlineKeyboardButton(text=str(i + 1), callback_data=callback_data))
+
+    keyboard.row(*buttons)
+
+    buttons = []
+    for i in range(5, 10):
         callback_data = f'{i + 1}'
         buttons.append(types.InlineKeyboardButton(text=str(i + 1), callback_data=callback_data))
 

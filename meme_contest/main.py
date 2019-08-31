@@ -1,6 +1,7 @@
 import os
 
 from meme_bot import MemeBot
+from models import init_models
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 bot = MemeBot(BOT_TOKEN)
@@ -17,6 +18,8 @@ def callback_handler(call):
 
 
 if __name__ == '__main__':
+    init_models()
+
     bot.run_pooling()
     bot.run_scheduler()
 

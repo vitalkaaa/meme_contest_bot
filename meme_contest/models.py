@@ -14,6 +14,7 @@ POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_HOST = os.getenv("POSTGRES_HOST")
 POSTGRES_DB = os.getenv("POSTGRES_DB")
 
+print(POSTGRES_DB, POSTGRES_HOST, POSTGRES_PASSWORD, POSTGRES_USER)
 engine = create_engine(f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}', echo=False)
 # engine = create_engine('sqlite:///db.sqlite', echo=False)
 
@@ -148,7 +149,12 @@ class User(Base):
     @staticmethod
     def get_rating(chat_id):
         with session_scope(engine) as session:
-            return session.query(User).filter_by(chat_id=chat_id).order_by(User.points).all()
+            rating = 'Топ мемеров:\n'
+            for i, user in enumerate(session.query(User).filter_by(chat_id=chat_id).order_by(User.points).all()):
+                rating += f'<b>{i + 1} место</b> {user.username} [{user.points} балла]\n'
+
+            return rating
+
 
     @staticmethod
     def is_exists(chat_id, telegram_id):
@@ -163,8 +169,10 @@ class User(Base):
             user.points += points
 
 
+def init_models():
+    Base.metadata.create_all(engine)
+
 # Создание таблицы
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
-    # for vote in Vote.get_votes(-364882467):
-    #     print(vote.user_id, vote.mark, vote.chat_id, vote.msg_id)
+

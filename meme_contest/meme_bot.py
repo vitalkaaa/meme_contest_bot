@@ -28,6 +28,12 @@ class MemeBot(telebot.TeleBot):
     def __init__(self, token):
         super(MemeBot, self).__init__(token=token)
 
+    def command_handler(self, message):
+        chat_id = message.chat.id
+
+        if message.text.split(' ')[0].startswith('/rating'):
+            self.send_message(chat_id, User.get_rating(chat_id), parse_mode='HTML')
+
     def meme_handler(self, message: telebot.types.Message):
         telegram_id = message.from_user.id
         chat_id = message.chat.id
@@ -43,16 +49,20 @@ class MemeBot(telebot.TeleBot):
                 self.send_message(chat_id, 'Mark this meme',
                                   reply_to_message_id=msg_id,
                                   reply_markup=vote_keyboard())
+            else:
+                if message.text.startswith('/'):
+                    self.command_handler(message)
 
     def vote_handler(self, call: telebot.types.CallbackQuery):
         telegram_id = call.from_user.id
         chat_id = call.message.chat.id
         msg_id = call.message.message_id
         mark = int(call.data)
+        username = '@' + call.from_user.username if call.from_user.username else call.from_user.first_name
 
         user = User.get(chat_id, telegram_id)
         if not user:
-            user.save()
+            user = User(telegram_id, chat_id, username).save()
 
         if not Vote.is_voted(user.id, chat_id, msg_id):
             Vote(user.id, chat_id, msg_id, mark).save()
@@ -72,12 +82,8 @@ class MemeBot(telebot.TeleBot):
                     except ApiException as err:
                         print(err)
 
-            rating = 'Топ мемеров:\n'
-            for i, user in enumerate(User.get_rating(chat_id)):
-                rating += f'<b>{i + 1} место</b> {user.username} [{user.points} балла]'
-
             try:
-                self.send_message(chat_id, rating, parse_mode='HTML')
+                self.send_message(chat_id, User.get_rating(chat_id), parse_mode='HTML')
             except ApiException as err:
                 print(err)
 
@@ -95,7 +101,4 @@ class MemeBot(telebot.TeleBot):
         thread.run()
 
     def run_pooling(self):
-        # thread = Thread(target=self.polling, kwargs={'none_stop': True, 'interval': 0})
-        # thread.daemon = True
-        # thread.start()
         self.polling(none_stop=True, interval=0)
