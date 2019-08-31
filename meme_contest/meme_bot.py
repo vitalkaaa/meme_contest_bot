@@ -67,7 +67,7 @@ class MemeBot(telebot.TeleBot):
             user = User(telegram_id, chat_id, username).save()
 
         meme = Meme.get_meme(chat_id, msg_id - 1)
-        if meme and not Vote.is_voted(user.id, meme.id - 1):
+        if meme and not Vote.is_voted(user.id, meme.id):
             Vote(user.id, meme.id, mark).save()
             print(user.username, 'voted', mark, flush=True)
             self.answer_callback_query(call.id, text='You voted')
