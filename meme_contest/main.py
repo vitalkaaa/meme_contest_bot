@@ -19,7 +19,6 @@ def callback_handler(call):
 
 if __name__ == '__main__':
     init_models()
-
     bot.run_pooling()
     bot.run_scheduler()
 

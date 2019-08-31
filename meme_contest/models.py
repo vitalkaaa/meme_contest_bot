@@ -59,16 +59,13 @@ class Vote(Base):
     __tablename__ = 'votes'
     id = Column(Integer, primary_key=True, autoincrement=True)
     voted_at = Column(DateTime)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    msg_id = Column(Integer)
-    chat_id = Column(String)
+    meme_id = Column(Integer, ForeignKey('memes.id'))
     mark = Column(Integer)
 
-    def __init__(self, user_id, chat_id, msg_id, mark):
+    def __init__(self, user_id, meme_id, mark):
         self.voted_at = datetime.utcnow().replace(microsecond=0)
         self.user_id = user_id
-        self.chat_id = chat_id
-        self.msg_id = msg_id
+        self.meme_id = meme_id
         self.mark = mark
 
     def save(self):
@@ -79,9 +76,9 @@ class Vote(Base):
         return self
 
     @staticmethod
-    def is_voted(user_id, chat_id, msg_id):
+    def is_voted(user_id, meme_id):
         with session_scope(engine) as session:
-            query = session.query(Vote).filter_by(user_id=user_id, chat_id=chat_id, msg_id=msg_id)
+            query = session.query(Vote).join(Meme).filter(Meme.user_id == user_id, Meme.id == meme_id)
             is_marked = query.count() > 0
             return is_marked
 
@@ -94,8 +91,8 @@ class Vote(Base):
     @staticmethod
     def get_votes(chat_id):
         with session_scope(engine) as session:
-            chats = session.query(Vote).filter_by(chat_id=chat_id).all()
-            return chats
+            votes = session.query(Vote).filter_by(chat_id=chat_id).all()
+            return votes
 
     @staticmethod
     def get_daily_rating(chat_id):
@@ -144,12 +141,11 @@ class User(Base):
     @staticmethod
     def get_rating(chat_id):
         with session_scope(engine) as session:
-            rating = 'Топ мемеров:\n'
+            rating = '<b>Топ:</b>\n\n'
             for i, user in enumerate(session.query(User).filter_by(chat_id=chat_id).order_by(User.points).all()):
                 rating += f'<b>{i + 1} место</b> {user.username} [{user.points} балла]\n'
 
             return rating
-
 
     @staticmethod
     def is_exists(chat_id, telegram_id):
@@ -169,5 +165,6 @@ def init_models():
 
 # Создание таблицы
 if __name__ == '__main__':
-    Base.metadata.create_all(engine)
+    Vote.is_voted(1,1)
+    # Base.metadata.create_all(engine)
 
