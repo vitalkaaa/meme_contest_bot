@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+import os
 from sqlalchemy import Column, Integer, DateTime, func, String, ForeignKey
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -8,7 +9,13 @@ from utils import session_scope
 
 print('connect to DB')
 Base = declarative_base()
-engine = create_engine('postgresql+psycopg2://admin:password@localhost/memes', echo=False)
+POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
+POSTGRES_USER = os.getenv("POSTGRES_USER")
+POSTGRES_HOST = os.getenv("POSTGRES_HOST")
+POSTGRES_DB = os.getenv("POSTGRES_DB")
+
+
+engine = create_engine(f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}', echo=False)
 # engine = create_engine('sqlite:///db.sqlite', echo=False)
 
 
