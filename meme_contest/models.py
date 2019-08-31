@@ -159,6 +159,6 @@ class User(Base):
 
 # Создание таблицы
 if __name__ == '__main__':
-    # Base.metadata.create_all(engine)
-    for vote in Vote.get_votes(-364882467):
-        print(vote.user_id, vote.mark, vote.chat_id, vote.msg_id)
+    Base.metadata.create_all(engine)
+    # for vote in Vote.get_votes(-364882467):
+    #     print(vote.user_id, vote.mark, vote.chat_id, vote.msg_id)

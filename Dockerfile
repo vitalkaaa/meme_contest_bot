@@ -4,4 +4,4 @@ RUN apt install -y libpq-dev && pip install --upgrade pip && pip install -r requ
 ADD meme_contest app/
 WORKDIR app
 ENTRYPOINT python models.py
-ENTRYPOINT python main.py
+ENTRYPOINT python test.py
