@@ -45,6 +45,7 @@ class MemeBot(telebot.TeleBot):
             if message.content_type != 'text':
                 last_meme_posted_at_cache[chat_id][telegram_id] = datetime.utcnow().replace(microsecond=0)
                 user = User(telegram_id, chat_id, username).save_if_not_exists()
+
                 Meme(user.id, msg_id, chat_id).save()
                 self.send_message(chat_id, 'Mark this meme',
                                   reply_to_message_id=msg_id,
@@ -64,7 +65,8 @@ class MemeBot(telebot.TeleBot):
         if not user:
             user = User(telegram_id, chat_id, username).save()
 
-        meme = Meme.get_meme(chat_id, msg_id)
+        meme = Meme.get_meme(chat_id, msg_id - 1)
+
         if meme and not Vote.is_voted(user.id, meme.id):
             Vote(user.id, meme.id, mark).save()
             self.answer_callback_query(call.id, text='You voted')

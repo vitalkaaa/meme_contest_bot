@@ -38,6 +38,7 @@ class Meme(Base):
     @staticmethod
     def get_meme(chat_id, msg_id):
         with session_scope(engine) as session:
+            print(chat_id, msg_id)
             return session.query(Meme).filter_by(chat_id=chat_id, msg_id=msg_id).first()
 
     @staticmethod
@@ -71,7 +72,7 @@ class Vote(Base):
     def save(self):
         with session_scope(engine) as session:
             session.add(self)
-            print('voted', self.msg_id)
+            print('voted', self.meme_id)
             session.commit()
         return self
 
@@ -131,7 +132,7 @@ class User(Base):
         if not User.is_exists(self.chat_id, self.telegram_id):
             return User(self.telegram_id, self.chat_id, self.username).save()
         else:
-            return self
+            return User.get(self.chat_id, self.telegram_id)
 
     @staticmethod
     def get(chat_id, telegram_id):
@@ -141,7 +142,7 @@ class User(Base):
     @staticmethod
     def get_rating(chat_id):
         with session_scope(engine) as session:
-            rating = '<b>Топ:</b>\n\n'
+            rating = '<b>Топ:</b>\n\n\n'
             for i, user in enumerate(session.query(User).filter_by(chat_id=chat_id).order_by(User.points).all()):
                 rating += f'<b>{i + 1} место</b> {user.username} [{user.points} балла]\n'
 
