@@ -10,7 +10,7 @@ from utils import session_scope
 Base = declarative_base()
 DB_CONNECTION_STRING = os.getenv("DB_CONNECTION_STRING")
 
-print('connecting to DB:', DB_CONNECTION_STRING)
+print('connecting to DB:', DB_CONNECTION_STRING, flush=True)
 engine = create_engine(DB_CONNECTION_STRING, echo=False)
 
 
@@ -31,7 +31,7 @@ class Meme(Base):
     def save(self):
         with session_scope(engine) as session:
                 session.add(self)
-                print('detect meme')
+                print('detect meme', flush=True)
                 session.commit()
         return self
 
@@ -72,7 +72,7 @@ class Vote(Base):
     def save(self):
         with session_scope(engine) as session:
             session.add(self)
-            print('voted', self.meme_id)
+            print('voted', self.meme_id, flush=True)
             session.commit()
         return self
 
@@ -124,8 +124,8 @@ class User(Base):
     def save(self):
         with session_scope(engine) as session:
             session.add(self)
-            print('new user', self.id)
             session.commit()
+            print('new user', self.id, flush=True)
         return self
 
     def save_if_not_exists(self):
@@ -166,6 +166,6 @@ def init_models():
 
 # Создание таблицы
 if __name__ == '__main__':
-    Vote.is_voted(1,1)
+    Vote.is_voted(1, 1)
     # Base.metadata.create_all(engine)
 

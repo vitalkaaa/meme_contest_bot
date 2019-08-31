@@ -46,7 +46,8 @@ class MemeBot(telebot.TeleBot):
                 last_meme_posted_at_cache[chat_id][telegram_id] = datetime.utcnow().replace(microsecond=0)
                 user = User(telegram_id, chat_id, username).save_if_not_exists()
 
-                Meme(user.id, msg_id, chat_id).save()
+                meme = Meme(user.id, msg_id, chat_id).save()
+                print('new meme', meme.id, flush=True)
                 self.send_message(chat_id, 'Mark this meme',
                                   reply_to_message_id=msg_id,
                                   reply_markup=vote_keyboard())
@@ -69,8 +70,10 @@ class MemeBot(telebot.TeleBot):
 
         if meme and not Vote.is_voted(user.id, meme.id):
             Vote(user.id, meme.id, mark).save()
+            print(user.username, 'voted', flush=True)
             self.answer_callback_query(call.id, text='You voted')
         else:
+            print(user.username, 'have tried to vote again', flush=True)
             self.answer_callback_query(call.id, text='You have already voted')
 
     def send_daily_results(self):
@@ -83,16 +86,17 @@ class MemeBot(telebot.TeleBot):
                         self.send_message(chat_id, f'{medals[i]} <b>+{3 - i}</b> баллa',
                                           reply_to_message_id=t[0] - 1, parse_mode='HTML')
                     except ApiException as err:
-                        print(err)
+                        print(err, flush=True)
 
             try:
                 self.send_message(chat_id, User.get_rating(chat_id), parse_mode='HTML')
             except ApiException as err:
-                print(err)
+                print(err, flush=True)
 
     def run_scheduler(self):
         def scheduler_worker():
             # schedule.every(4).seconds.do(self.send_daily_results)
+            print('sending daily rating', flush=True)
             schedule.every().day.at("00:00").do(self.send_daily_results)
 
             while True:
